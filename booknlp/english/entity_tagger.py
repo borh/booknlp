@@ -4,6 +4,7 @@ import re
 import booknlp.common.layered_reader as layered_reader
 import booknlp.common.sequence_layered_reader as sequence_layered_reader
 import pkg_resources
+from booknlp.common.torch_compat import load_state_dict_compatible
 
 class LitBankEntityTagger:
 	def __init__(self, model_file, model_tagset):
@@ -19,7 +20,7 @@ class LitBankEntityTagger:
 		self.model = Tagger(freeze_bert=False, base_model=base_model, tagset_flat={"EVENT":1, "O":1}, supersense_tagset=self.supersense_tagset, tagset=self.tagset, device=device)
 
 		self.model.to(device)
-		self.model.load_state_dict(torch.load(model_file, map_location=device))
+		load_state_dict_compatible(self.model, model_file, map_location=device)
 		wnsFile = pkg_resources.resource_filename(__name__, "data/wordnet.first.sense")
 		self.wns=self.read_wn(wnsFile)
 

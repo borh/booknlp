@@ -3,6 +3,7 @@ import re
 from booknlp.english.speaker_attribution import BERTSpeakerID
 import numpy as np
 import sys
+from booknlp.common.torch_compat import load_state_dict_compatible
 
 PINK = '\033[95m'
 ENDC = '\033[0m'
@@ -17,7 +18,7 @@ class QuotationAttribution:
 		base_model=re.sub(".model", "", base_model)
 
 		self.model = BERTSpeakerID(base_model=base_model)
-		self.model.load_state_dict(torch.load(modelFile, map_location=device))
+		load_state_dict_compatible(self.model, modelFile, map_location=device)
 		self.model.to(device)
 		self.model.eval()
 
